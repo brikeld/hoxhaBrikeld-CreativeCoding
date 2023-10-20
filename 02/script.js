@@ -38,15 +38,13 @@ function draw()   {
 function x1(t) {
   return sin(t / 410) * 100 + sin(t) * 120;
 }
-
 function y1(t) {
-  return cos(t / 130) * 75 + sin(t / 4) * 100; 
+  return cos(t / 130) * 75 + sin(t/ 4) * sin(t)*100; 
 }
 
 function x2(t) {
   return sin(t / 30) * 130 + sin(t / 3) * 190;
 }
-
 function y2(t) {
   return cos(t / 50) * 200 + sin(t / 3) * 80;
 }
