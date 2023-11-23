@@ -58,7 +58,7 @@ class Character {
     this.size = lerp(this.size, this.originalSize, 0.1);
   }
 
-  updateTrail() {
+  updateTrail() { // ajoute la position actuelle dans un array e efface les anciennes pour limiter la longueur du trail
     trail.push(this.position.copy());
     if (trail.length > maxTrailLength) {
       trail.shift();
@@ -70,11 +70,21 @@ class Character {
 
     fill(255, 0, 0);
     ellipse(this.position.x, this.position.y, this.size, this.size);
+    fill(255);
+    let ayeSize = this.size / 8;
+    let ayeOffset = this.size / 8;
+    ellipse(this.position.x-5 - ayeOffset, this.position.y-5, ayeSize, ayeSize);
+    ellipse(this.position.x-5 + ayeOffset, this.position.y-5, ayeSize, ayeSize);
+    fill(0);
+    let mouthWidth = this.size / 4;
+    let mouthHeight = this.size / 8;
+    let mouthOffset = this.size / 4;
+    arc(this.position.x-5, this.position.y+5, mouthWidth, mouthHeight, 0, PI, CHORD);
   }
 
-  displayTrail() {
-    for (let i = trail.length - 1; i >= 0; i--) {
-      let pos = trail[i];
+  displayTrail() { // dessine le trail du personnage avec opacité et taille qui diminue dans le temps 
+    for (let i = trail.length - 1; i >= 0; i--) { 
+      let pos = trail[i]; 
       let alpha = map(i, 0, trail.length, 0, 255);
       fill(255, 0, 0, alpha);
       noStroke();
@@ -117,11 +127,11 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   myCharacter = new Character(width / 2, height / 2, 50);
 
-  staticShapes.push(new Shape(1100, 1100, 200, 90, color(0, 100, 255)));
-  staticShapes.push(new Shape(1400, 350, 300, 300, color(255, 100, 0)));
-  staticShapes.push(new Shape(1590, 790, 100, 30, color(0, 255, 100)));
-  staticShapes.push(new Shape(450, 400, 120, 55, color(255, 255, 0)));
-  staticShapes.push(new Shape(250, 150, 80, 40, color(255, 0, 255)));
+  staticShapes.push(new Shape(1100, 1100, 200, 90, color(255)));
+  staticShapes.push(new Shape(1400, 350, 300, 300, color(255)));
+  staticShapes.push(new Shape(1590, 790, 100, 30, color(255)));
+  staticShapes.push(new Shape(450, 400, 120, 55, color(255)));
+  staticShapes.push(new Shape(250, 150, 80, 40, color(255)));
 }
 
 function draw() {
