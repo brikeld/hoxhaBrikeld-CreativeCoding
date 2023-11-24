@@ -1,7 +1,7 @@
 let myCharacter;
 let trail = [];
-let maxTrailLength = 50;
-let easing = 0.03;
+let maxTrailLength = 60;
+let easing = 0.04;
 let staticShapes = [];
 
 class Character {
@@ -66,16 +66,27 @@ class Character {
   }
 
   display() {
-    this.displayTrail();
-
-    fill(255, 0, 0);
-    ellipse(this.position.x, this.position.y, this.size, this.size);
+      this.displayTrail();
+      fill(255, 0, 0);
+      ellipse(this.position.x, this.position.y, this.size, this.size);
+  
+      fill(255);
+      let ayeSize = this.size / 8;
+      let ayeOffset = this.size / 8;
+      ellipse(this.position.x - 5 - ayeOffset, this.position.y - 5, ayeSize, ayeSize);
+      ellipse(this.position.x - 5 + ayeOffset, this.position.y - 5, ayeSize, ayeSize);
+  
+      fill(0); 
+      let mouthWidth = this.size / 4;
+      let mouthHeight = this.size / 8;
+      let mouthYOffset = this.size / 4;
+      arc(this.position.x-5, this.position.y-2 + mouthYOffset, mouthWidth, mouthHeight, 0, PI);
   }
 
   displayTrail() {
     for (let i = trail.length - 1; i >= 0; i--) {
       let pos = trail[i];
-      let alpha = map(i, 0, trail.length, 0, 255);
+      let alpha = map(i, 0, trail.length, 0, 4000);
       fill(255, 0, 0, alpha);
       noStroke();
       ellipse(
@@ -117,15 +128,15 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   myCharacter = new Character(width / 2, height / 2, 50);
 
-  staticShapes.push(new Shape(1100, 1100, 200, 90, color(0, 100, 255)));
-  staticShapes.push(new Shape(1400, 350, 300, 300, color(255, 100, 0)));
-  staticShapes.push(new Shape(1590, 790, 100, 30, color(0, 255, 100)));
-  staticShapes.push(new Shape(450, 400, 120, 55, color(255, 255, 0)));
-  staticShapes.push(new Shape(250, 150, 80, 40, color(255, 0, 255)));
+  staticShapes.push(new Shape(1200,40, 20, 200, color(255)));
+  staticShapes.push(new Shape(1100, 550, 60, 60, color(255)));
+  staticShapes.push(new Shape(1590, 790, 100, 30, color(255)));
+  staticShapes.push(new Shape(450, 400, 120, 55, color(255)));
+  staticShapes.push(new Shape(150, 150, 80, 40, color(255)));
 }
 
 function draw() {
-  background(22);
+  background(22); // 22,5 see pattern
 
   for (let shape of staticShapes) {
     shape.display();
