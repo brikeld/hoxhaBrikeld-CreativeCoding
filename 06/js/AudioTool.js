@@ -13,13 +13,13 @@ class AudioTool {
   }
 
   initAudioContext() {
-    // Initialize the AudioContext
+
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.setupAnalyser();
   }
 
   setupAnalyser() {
-    // Set up the Analyser node
+
     this.analyser = this.audioContext.createAnalyser();
     this.source = this.audioContext.createMediaElementSource(this.audio);
     this.source.connect(this.analyser);
@@ -33,28 +33,28 @@ class AudioTool {
   }
 
   updateWaveForm() {
-    // Update waveform data
+
     if (this.audioContext) {
       this.analyser.getByteTimeDomainData(this.dataWave);
     }
   }
 
   updateFrequency() {
-    // Update frequency data
+
     if (this.audioContext) {
       this.analyser.getByteFrequencyData(this.dataFrequency);
     }
   }
 
   updatedFloatFrequency() {
-    // Update float frequency data
+
     if (this.audioContext) {
       this.analyser.getFloatFrequencyData(this.dataFloatFrequency);
     }
   }
 
   play() {
-    // Play the audio, and handle browser autoplay policy
+
     if (this.audioContext.state === 'suspended') {
       this.audioContext.resume();
     }
