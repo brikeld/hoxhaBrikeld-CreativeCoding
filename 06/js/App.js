@@ -44,7 +44,7 @@ class App {
   createCircles() {
     const circles = [];
     for (let i = 0; i < this.audioTool.bufferLength; i++) {
-      const color = this.mapFrequencyToColor(0); // Initial color
+      const color = this.mapFrequencyToColor(0);
       circles.push(new Circle(i * 2, this.height / 2, 5, this.ctx, color));
     }
     return circles;
@@ -52,7 +52,7 @@ class App {
 
   mapFrequencyToColor(frequency) {
     this.ctx.fillStyle = "black";
-    const hue = (frequency * 2) % 180; // Mapping frequency to hue
+    const hue = (frequency * 2) % 180; 
     return `hsl(${hue}, 30%, 50%)`;
 
   }
@@ -71,12 +71,11 @@ class App {
 
     data.forEach((value, index) => {
       if (this.allCircles[index]) {
-        const timeFactor = currentTime * 0.0002; // Control the speed of the animation
+        const timeFactor = currentTime * 0.0002; 
         const angle = (timeFactor + index * 0.1) % (Math.PI * 2);
-        const radius = value * 2; // Radius based on frequency value
-        const randomFactor = Math.random() * 0.5 + 0.5; // Random factor between 0.5 and 1
+        const radius = value * 2; 
+        const randomFactor = Math.random() * 0.5 + 0.5; 
 
-        // Animated movement
         this.allCircles[index].x = this.width / 2 + Math.cos(angle) * radius * randomFactor;
         this.allCircles[index].y = this.height / 2 + Math.sin(angle) * radius * randomFactor;
 
