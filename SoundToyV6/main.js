@@ -21,7 +21,7 @@ const noteDelay = 200;
 const monPiano = new Piano();
 const allLines = [];
 const imgInterface = new Image();
-imgInterface.src = '/testInterfaceQuality.png';
+imgInterface.src = '/interfacciaNERA.png';
 
 // Define button positions and sizes relative to the canvas
 const buttonPositions = {
@@ -243,5 +243,5 @@ function draw() {
 draw();
 
 function setVolume() {
-  monPiano.sampler.volume.value = 1;
+  monPiano.sampler.volume.value = -1;
 }
