@@ -8,7 +8,7 @@ export default class Line {
     this.ctx = ctx;
     this.note = note;
     this.piano = piano;
-    this.strokeWidth = 50;
+    this.strokeWidth = 40;
     
   }
 
