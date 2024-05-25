@@ -35,7 +35,7 @@ export default class DottedLine {
       const y = this.y1 + i * yStep;
       this.ctx.beginPath();
       this.ctx.arc(x, y, this.circleRadius, 0, 2 * Math.PI);
-      this.ctx.fill();
+      this.ctx.fill(); // fill the line with img 
     }
 
     this.ctx.globalCompositeOperation = 'source-over';

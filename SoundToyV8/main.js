@@ -2,7 +2,7 @@ import Piano from "./js/piano";
 import midiNote from "midi-note";
 import MidiPlayer from "./js/MidiPlayer";
 import Line from "./js/Line";
-import DottedLine from "./js/DottedLine"; // Import DottedLine class
+import DottedLine from "./js/DottedLine";
 import Circle from "./js/Circle";
 import PlayFunction from "./js/PlayFunction";
 
@@ -12,10 +12,13 @@ let buttonClickedLeft = false;
 let translateX = 0;
 let lastNote = null;
 let isMouseDown = false;
-let useDottedLine = false; // Add a flag to track the current line type
-let currentIconIndex = 0; // Add a variable to track the current icon index
-let isDraggingIcon = false; // Track if an icon is being dragged
-let draggedIcon = null; // Store the currently dragged icon
+let useDottedLine = false;
+
+let currentIconIndex = 0;
+let currentTextButtonIndex = 0;
+
+let isDraggingIcon = false;
+let draggedIcon = null;
 
 const canvas = document.getElementsByTagName("canvas")[0];
 canvas.width = document.body.clientWidth;
@@ -29,11 +32,18 @@ const imgInterface = new Image();
 imgInterface.src = '/interfacciaNERA.png';
 
 const iconImages = [];
-const totalIcons = 13;
+const totalIcons = 14;
 for (let i = 1; i <= totalIcons; i++) {
   const img = new Image();
   img.src = `/icons/icon (${i}).png`;
   iconImages.push(img);
+}
+
+let textButtonImages = [];
+for (let i = 1; i <= 13; i++) {
+  let img = new Image();
+  img.src = `textImg/text (${i}).png`;
+  textButtonImages.push(img);
 }
 
 // Define button positions and sizes relative to the canvas
@@ -43,7 +53,8 @@ const buttonPositions = {
   left: { x: 0.05, y: 0.91, width: 0.03, height: 0.03 },
   PlayButton: { x: 0.88, y: 0.8, width: 0.080, height: 0.11 },
   LineButton: { x: 0.868, y: 0.05, width: 0.099, height: 0.13 },
-  iconButton: { x: 0.868, y: 0.18, width: 0.099, height: 0.13 }
+  iconButton: { x: 0.868, y: 0.18, width: 0.099, height: 0.13 },
+  textButton: { x: 0.868, y: 0.31, width: 0.099, height: 0.13 } // New button position
 };
 
 function setCanvasResolution(canvas, ctx, scaleFactor) {
@@ -100,6 +111,13 @@ canvas.addEventListener("click", (event) => {
   PlayFunction(allLines, monPiano);
 }
 
+// Text button
+if (x >= buttonPositions.textButton.x && x <= buttonPositions.textButton.x + buttonPositions.textButton.width
+  && y >= buttonPositions.textButton.y && y <= buttonPositions.textButton.y + buttonPositions.textButton.height) {
+console.log("textButton clicked");
+}
+
+
 // Line button
 if (x >= buttonPositions.LineButton.x && x <= buttonPositions.LineButton.x + buttonPositions.LineButton.width
   && y >= buttonPositions.LineButton.y && y <= buttonPositions.LineButton.y + buttonPositions.LineButton.height) {
@@ -130,6 +148,19 @@ canvas.addEventListener("mousewheel", (event) => {
     } else {
       // Scroll down
       currentIconIndex = (currentIconIndex + 1) % totalIcons;
+    }
+    event.preventDefault(); // Prevent the default scroll behavior
+  }
+
+  // Check if the mouse is over the text button
+  if (mouseX >= buttonPositions.textButton.x && mouseX <= buttonPositions.textButton.x + buttonPositions.textButton.width
+      && mouseY >= buttonPositions.textButton.y && mouseY <= buttonPositions.textButton.y + buttonPositions.textButton.height) {
+    if (event.deltaY < 0) {
+      // Scroll up
+      currentTextButtonIndex = (currentTextButtonIndex - 1 + textButtonImages.length) % textButtonImages.length;
+    } else {
+      // Scroll down
+      currentTextButtonIndex = (currentTextButtonIndex + 1) % textButtonImages.length;
     }
     event.preventDefault(); // Prevent the default scroll behavior
   }
@@ -200,12 +231,13 @@ canvas.addEventListener("mouseup", (event) => {
   }
 });
 
-canvas.addEventListener("mousemove", (event) => {
-  if (isMouseDown) {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
 
+canvas.addEventListener("mousemove", (event) => {
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
+
+  if (isMouseDown) {
     if (mouseX >= drawingArea.x && mouseX <= drawingArea.x + drawingArea.width &&
         mouseY >= drawingArea.y && mouseY <= drawingArea.y + drawingArea.height) {
       const note = randomNote();
@@ -228,10 +260,11 @@ canvas.addEventListener("mousemove", (event) => {
   }
 
   if (isDraggingIcon) {
-    draggedIcon.x = event.clientX;
-    draggedIcon.y = event.clientY;
+    draggedIcon.x = mouseX - translateX;
+    draggedIcon.y = mouseY;
   }
 });
+
 
 function drawButton() {
   ctx.fillStyle = 'red';
@@ -268,8 +301,7 @@ function drawLineButton() {
 function drawIconButton() {
   ctx.fillStyle = 'orange';
   ctx.fillRect(buttonPositions.iconButton.x * canvas.width, buttonPositions.iconButton.y * canvas.height, buttonPositions.iconButton.width * canvas.width, buttonPositions.iconButton.height * canvas.height);
-  
-  // Draw the current icon image inside the icon button
+
   const iconRect = {
     x: buttonPositions.iconButton.x * canvas.width,
     y: buttonPositions.iconButton.y * canvas.height,
@@ -281,6 +313,26 @@ function drawIconButton() {
   if (currentIcon.complete) {
     ctx.drawImage(currentIcon, iconRect.x, iconRect.y, iconRect.width, iconRect.height);
   }
+}
+
+function drawTextButton() {
+  ctx.fillStyle = 'purple';
+  ctx.fillRect(buttonPositions.textButton.x * canvas.width, buttonPositions.textButton.y * canvas.height, buttonPositions.textButton.width * canvas.width, buttonPositions.textButton.height * canvas.height);
+
+  const textRect = {
+    x: buttonPositions.textButton.x * canvas.width,
+    y: buttonPositions.textButton.y * canvas.height,
+    width: buttonPositions.textButton.width * canvas.width,
+    height: buttonPositions.textButton.height * canvas.height
+  };
+
+  const currentTextButtonImage = textButtonImages[currentTextButtonIndex];
+  if (currentTextButtonImage.complete) {
+    ctx.drawImage(currentTextButtonImage, textRect.x, textRect.y, textRect.width, textRect.height);
+  }
+}
+
+function drawDeleteButton() {
 }
 
 function drawDrawingArea() {
@@ -297,13 +349,13 @@ function draw() {
   }
 
   if (buttonClicked) {
-    translateX += 100; 
-    buttonClicked = false; 
+    translateX += 100;
+    buttonClicked = false;
   } else if (canvasMoving) {
-    translateX -= 2; 
+    translateX -= 2;
   } else if (buttonClickedLeft) {
     translateX -= 100;
-    buttonClickedLeft = false; 
+    buttonClickedLeft = false;
   }
 
   ctx.setTransform(1, 0, 0, 1, translateX, 0);
@@ -313,7 +365,7 @@ function draw() {
   });
 
   placedIcons.forEach(icon => {
-    ctx.drawImage(icon.img, icon.x + translateX, icon.y, icon.img.width, icon.img.height);
+    ctx.drawImage(icon.img, icon.x + 0, icon.y, icon.img.width, icon.img.height);
   });
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -323,18 +375,20 @@ function draw() {
   drawLeftButton();
   drawPlayButton();
   drawDrawingArea();
-  drawLineButton(); 
-  drawIconButton(); // Draw the icon button with the current icon
+  drawLineButton();
+  drawIconButton();
+  drawTextButton();
 
   if (isDraggingIcon && draggedIcon) {
-    ctx.drawImage(draggedIcon.img, draggedIcon.x - draggedIcon.img.width / 2, draggedIcon.y - draggedIcon.img.height / 2);
+    ctx.drawImage(draggedIcon.img, draggedIcon.x, draggedIcon.y - draggedIcon.img.height / 2);
   }
 
-  requestAnimationFrame(draw);
+  requestAnimationFrame(draw); 
 }
 
 draw();
 
+
 function setVolume() {
-  monPiano.sampler.volume.value = -1;
+  monPiano.sampler.volume.value = -10;
 }
