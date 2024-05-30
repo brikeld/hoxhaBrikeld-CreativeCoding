@@ -9,7 +9,7 @@ export default class DottedLine {
     this.note = note;
     this.piano = piano;
     this.circleRadius = 20;
-    this.circleSpacing = 10;
+    this.circleSpacing = 20;
   }
 
   playNote() {

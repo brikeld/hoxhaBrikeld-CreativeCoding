@@ -34,7 +34,7 @@ const monPiano = new Piano();
 const allLines = [];
 const placedIcons = [];
 const imgInterface = new Image();
-imgInterface.src = "/interfacciaNERA.png";
+imgInterface.src = "/interfaceSoundToy.png";
 const placedTexts = [];
 
 const iconImages = [];
@@ -57,11 +57,17 @@ const buttonPositions = {
   right: { x: 0.8, y: 0.91, width: 0.03, height: 0.03 },
   stop: { x: 0.44, y: 0.91, width: 0.03, height: 0.03 },
   left: { x: 0.05, y: 0.91, width: 0.03, height: 0.03 },
-  PlayButton: { x: 0.88, y: 0.8, width: 0.08, height: 0.11 },
-  LineButton: { x: 0.868, y: 0.05, width: 0.099, height: 0.13 },
-  iconButton: { x: 0.868, y: 0.18, width: 0.099, height: 0.13 },
-  textButton: { x: 0.868, y: 0.31, width: 0.099, height: 0.13 },
-  EraseButton: { x: 0.868, y: 0.44, width: 0.099, height: 0.13 }, // New button position
+  LineButton: { x: 0.868, y: 0.05, width: 0.096, height: 0.123 },  
+
+  textButton: { x: 0.868, y: 0.322, width: 0.096, height: 0.123 },
+
+  iconButton: { x: 0.5, y: 0.322, width: 0.096, height: 0.123 },
+
+
+
+
+  EraseButton: { x: 0.868, y: 0.459, width: 0.096, height: 0.123 },
+  PlayButton: { x: 0.873, y: 0.8, width: 0.09, height: 0.11 },
 };
 
 function setCanvasResolution(canvas, ctx, scaleFactor) {
@@ -123,7 +129,7 @@ canvas.addEventListener("click", (event) => {
     console.log("left button clicked");
   }
 
-  // In the event listener for the play button click
+  // Play button
   if (
     x >= buttonPositions.PlayButton.x &&
     x <= buttonPositions.PlayButton.x + buttonPositions.PlayButton.width &&
@@ -132,7 +138,7 @@ canvas.addEventListener("click", (event) => {
   ) {
     console.log("new white circle button clicked");
     stopCanvasAnimation();
-    rewindAndPlay();
+    startPlayback();
   }
 
   if (
@@ -162,6 +168,17 @@ canvas.addEventListener("click", (event) => {
       y: event.clientY,
     };
     isMouseDown = false; // Ensure that lines are not drawn when dragging icon
+  }
+  
+  // Line button
+  if (
+    x >= buttonPositions.LineButton.x &&
+    x <= buttonPositions.LineButton.x + buttonPositions.LineButton.width &&
+    y >= buttonPositions.LineButton.y &&
+    y <= buttonPositions.LineButton.y + buttonPositions.LineButton.height
+  ) {
+    console.log("LineButton clicked");
+    useDottedLine = !useDottedLine; // Toggle the line type
   }
 });
 
@@ -438,36 +455,13 @@ function stopCanvasAnimation() {
   buttonClickedLeft = false;
 }
 
-function rewindAndPlay() {
-  let rewindInterval = setInterval(() => {
-    if (translateX < 0) {
-      translateX += 5; // Adjust the speed of the rewind
-      draw();
-    } else {
-      clearInterval(rewindInterval);
-      startPlayback();
-    }
-  }, 20);
-}
-
 function startPlayback() {
   let index = 0;
 
   function playNext() {
-    if (index < allLines.length + placedIcons.length + placedTexts.length) {
-      let element;
-      if (index < allLines.length) {
-        element = allLines[index];
-      } else if (index < allLines.length + placedIcons.length) {
-        element = placedIcons[index - allLines.length];
-      } else {
-        element = placedTexts[index - allLines.length - placedIcons.length];
-      }
-
-      highlightElement(element);
-      if (element.note) {
-        monPiano.sampler.triggerAttackRelease(element.note, "1n", "+0.1");
-      }
+    if (index < playedSounds.length) {
+      const note = playedSounds[index];
+      monPiano.sampler.triggerAttackRelease(note, "1n", "+0.1");
 
       index++;
       setTimeout(playNext, 1000); // Adjust the duration to match the sound length
@@ -479,22 +473,6 @@ function startPlayback() {
 
   disableUserInteractions(); // Disable user interactions during playback
   playNext();
-}
-
-function highlightElement(element) {
-  if (element instanceof Line || element instanceof DottedLine) {
-    ctx.save();
-    ctx.strokeStyle = "blue"; // Change color to highlight
-    ctx.lineWidth = element.strokeWidth + 2; // Increase line width
-    element.draw();
-    ctx.restore();
-  } else if (element.img) {
-    ctx.save();
-    ctx.globalAlpha = 0.5; // Make the image semi-transparent
-    ctx.drawImage(element.img, element.x, element.y, element.img.width, element.img.height);
-    ctx.globalAlpha = 1.0; // Reset transparency
-    ctx.restore();
-  }
 }
 
 function disableUserInteractions() {
@@ -540,28 +518,11 @@ function drawLeftButton() {
 }
 
 function drawPlayButton() {
-  ctx.fillStyle = "white";
-  ctx.beginPath();
-  ctx.arc(
-    buttonPositions.PlayButton.x * canvas.width +
-      (buttonPositions.PlayButton.width * canvas.width) / 2,
-    buttonPositions.PlayButton.y * canvas.height +
-      (buttonPositions.PlayButton.height * canvas.height) / 2,
-    (buttonPositions.PlayButton.width * canvas.width) / 2,
-    0,
-    Math.PI * 2
-  );
-  ctx.fill();
+
 }
 
 function drawLineButton() {
-  ctx.fillStyle = "yellow";
-  ctx.fillRect(
-    buttonPositions.LineButton.x * canvas.width,
-    buttonPositions.LineButton.y * canvas.height,
-    buttonPositions.LineButton.width * canvas.width,
-    buttonPositions.LineButton.height * canvas.height
-  );
+  // no fill button - add image
 }
 
 function drawIconButton() {
@@ -691,7 +652,7 @@ function draw() {
   drawLeftButton();
   drawPlayButton();
   drawDrawingArea();
-  drawLineButton();
+  drawLineButton(); // Draw the line button
   drawIconButton();
   drawTextButton();
   drawEraseButton();
@@ -716,7 +677,3 @@ function draw() {
 }
 
 draw();
-
-function setVolume() {
-  monPiano.sampler.volume.value = -1000;
-}
