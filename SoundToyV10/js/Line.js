@@ -34,4 +34,6 @@ export default class Line {
     this.ctx.stroke();
     this.ctx.globalCompositeOperation = 'source-over'; 
   }
+
+  
 }

@@ -6,6 +6,7 @@ import DottedLine from "./js/DottedLine";
 import Circle from "./js/Circle";
 import PlayFunction from "./js/PlayFunction";
 import Undo from "./js/Undo"; 
+import * as SEGMENT from "./js/Segment"; 
 
 const playedSounds = []; 
 
@@ -65,8 +66,7 @@ for (let i = 1; i <= 7; i++) {
   textButtonImages.push(img);
 }
 
-
-//lines scrolling
+//lines button  scrolling images
 let currentLineButtonIndex = 0;
 const lineButtonImages = [];
 const totalLineButtons = 2;
@@ -75,7 +75,6 @@ for (let i = 1; i <= totalLineButtons; i++) {
   img.src = `lineaPNG/line (${i}).png`;
   lineButtonImages.push(img);
 }
-
 
 
 const buttonPositions = {
@@ -105,7 +104,7 @@ function setCanvasResolution(canvas, ctx, scaleFactor) {
   ctx.scale(scaleFactor, scaleFactor);
 }
 
-// Define the drawing area (rectangle)
+// Define the drawing area 
 const drawingArea = {
   x: canvas.width / 27,
   y: canvas.height / 20,
@@ -118,7 +117,7 @@ canvas.addEventListener("click", (event) => {
   const x = (event.clientX - rect.left) / rect.width;
   const y = (event.clientY - rect.top) / rect.height;
 
-  // Right button
+  // Right button - forward
   if (
     x >= buttonPositions.right.x &&
     x <= buttonPositions.right.x + buttonPositions.right.width &&
@@ -140,7 +139,7 @@ canvas.addEventListener("click", (event) => {
     console.log("stop button clicked");
   }
 
-  // Left button
+  // Left button - backward
   if (
     x >= buttonPositions.left.x &&
     x <= buttonPositions.left.x + buttonPositions.left.width &&
@@ -151,14 +150,14 @@ canvas.addEventListener("click", (event) => {
     console.log("left button clicked");
   }
 
-  // Play button
+  // Play button 
   if (
     x >= buttonPositions.PlayButton.x &&
     x <= buttonPositions.PlayButton.x + buttonPositions.PlayButton.width &&
     y >= buttonPositions.PlayButton.y &&
-    y <= buttonPositions.PlayButton.y + buttonPositions.PlayButton.height
+   y <= buttonPositions.PlayButton.y + buttonPositions.PlayButton.height
   ) {
-    console.log("new white circle button clicked");
+    console.log("playButton clicked");
     stopCanvasAnimation();
     startPlayback();
   }
@@ -170,11 +169,10 @@ canvas.addEventListener("click", (event) => {
     y <= buttonPositions.textButton.y + buttonPositions.textButton.height
   ) {
     console.log("textButton clicked");
-    isDraggingText = true; // Start dragging the text
+    isDraggingText = true; 
     draggedText = { img: textButtonImages[currentTextButtonIndex], x: event.clientX, y: event.clientY };
-    isMouseDown = false; // Ensure that lines are not drawn when dragging text
+    isMouseDown = false; 
   }
-  // Check if icon button is clicked
   if (
     x >= buttonPositions.iconButton.x &&
     x <= buttonPositions.iconButton.x + buttonPositions.iconButton.width &&
@@ -188,7 +186,7 @@ canvas.addEventListener("click", (event) => {
       x: event.clientX,
       y: event.clientY,
     };
-    isMouseDown = false; // Ensure that lines are not drawn when dragging icon
+    isMouseDown = false; 
   }
 // Undo button
   if (
@@ -198,7 +196,7 @@ canvas.addEventListener("click", (event) => {
     y <= buttonPositions.UndoButton.y + buttonPositions.UndoButton.height
   ) {
     console.log("UndoButton clicked");
-    Undo(allLines, placedIcons, placedTexts); // Call the Undo function
+    Undo(allLines, placedIcons, placedTexts); // Undo function 
   };
   
   // Line button
@@ -311,6 +309,9 @@ canvas.addEventListener("mousemove", handleMouseMove);
 canvas.addEventListener("mouseup", handleMouseUp);
 
 function handleMouseDown(event) {
+
+  
+
   const rect = canvas.getBoundingClientRect();
   const mouseX = event.clientX - rect.left;
   const mouseY = event.clientY - rect.top;
@@ -321,6 +322,8 @@ function handleMouseDown(event) {
     mouseY >= drawingArea.y &&
     mouseY <= drawingArea.y + drawingArea.height
   ) {
+
+    SEGMENT.startSegment();
     isMouseDown = true;
     lastX = mouseX;
     lastY = mouseY;
@@ -406,6 +409,9 @@ function handleMouseMove(event) {
         );
       }
       allLines.push(line);
+
+      SEGMENT.addLine(line);
+
       if (!playedNote) {
         console.log("played in mousemove: " + lastNote);
         monPiano.sampler.triggerAttackRelease(lastNote, "1n", "+0.1");
@@ -431,6 +437,7 @@ function handleMouseMove(event) {
 
 
 function handleMouseUp(event) {
+
   isMouseDown = false;
   if (lastNote) {
     monPiano.sampler.triggerRelease(lastNote);
@@ -451,8 +458,8 @@ function handleMouseUp(event) {
     ) {
       placedIcons.push({
         img: draggedIcon.img,
-        x: mouseX - translateX,
-        y: mouseY,
+        x: mouseX - translateX - draggedIcon.img.width / 2, // Adjust x to center the image
+        y: mouseY - draggedIcon.img.height / 2, // Adjust y to center the image
       });
       if (!playedNote) { // Ensure a note is only generated once per interaction
         const note = randomNote();
@@ -482,8 +489,8 @@ function handleMouseUp(event) {
     ) {
       placedTexts.push({
         img: draggedText.img,
-        x: mouseX - translateX,
-        y: mouseY,
+        x: mouseX - translateX - draggedText.img.width / 2, // Adjust x to center the image
+        y: mouseY - draggedText.img.height / 2, // Adjust y to center the image
       });
       if (!playedNote) { // Ensure a note is only generated once per interaction
         const note = randomNote();
@@ -712,7 +719,7 @@ function draw() {
     );
   }
 
-
+  // console.log(SEGMENT.segments)
   requestAnimationFrame(draw);
 }
 draw();
