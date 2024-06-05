@@ -27,6 +27,10 @@ export default function DemoFunction(
         return;
       }
       img = textButtonImages[imageIndex];
+    } else if (type === "line") {  
+      
+
+      return;
     } else {
       console.error(`Unknown type: ${type}`);
       return;
@@ -60,6 +64,8 @@ export default function DemoFunction(
         monPiano.iconSampler.triggerAttackRelease(sound.note, "1n");
       } else if (sound.type === "text") {
         monPiano.textSampler.triggerAttackRelease(sound.note, "1n");
+      } else if (sound.type === "line") {
+        monPiano.lineSampler.triggerAttackRelease(sound.note, "1n");
       }
       placeRandomImage(sound.note, sound.type); // Place the image on the canvas
     }, sound.delay * 1000);

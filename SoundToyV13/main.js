@@ -10,21 +10,19 @@ import * as SEGMENT from "./js/Segment";
 import DemoFunction from "./js/DemoFunction"; 
 import * as Tone from 'tone';
 
-// let backgroundAudio;
-
-// function initializeBackgroundAudio(url) {
-//   backgroundAudio = new Tone.Player({
-//     url: url,
-//     loop: true,
-//     autostart: true,
-//   }).toDestination();
-// }
-
-// function setBackgroundAudioVolume(volume) {
-//   if (backgroundAudio) {
-//     backgroundAudio.volume.value = volume;
-//   }
-// }
+let backgroundAudio;
+function initializeBackgroundAudio(url) {
+  backgroundAudio = new Tone.Player({
+    url: url,
+    loop: true,
+    autostart: true,
+  }).toDestination();
+}
+function setBackgroundAudioVolume(volume) {
+  if (backgroundAudio) {
+    backgroundAudio.volume.value = volume;
+  }
+}
 
 const playedSounds = []; 
 
@@ -665,5 +663,5 @@ function draw() {
 
 draw();
 
-//initializeBackgroundAudio("drums.mp3");
-// setBackgroundAudioVolume(0);
+initializeBackgroundAudio("drums2.mp3");
+setBackgroundAudioVolume(-40);
