@@ -1,6 +1,6 @@
 let timers = [];
 
-export default function PlayFunction(playedSounds, monPiano, allLines, placedIcons, placedTexts, ctx, canvasWidth, translateX) {
+export default function PlayFunction(playedSounds, monPiano, allLines, placedIcons, placedTexts, ctx, canvasWidth, translateX, DemoFunction) {
   console.log('All played sounds:', playedSounds);
 
   timers.forEach(timer => clearTimeout(timer));

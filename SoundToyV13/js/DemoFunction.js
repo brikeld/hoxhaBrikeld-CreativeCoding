@@ -1,5 +1,21 @@
 import { compositions } from "./compositions";
+import * as Tone from "tone";
+
 let index = 0;
+let playedSounds = [];
+
+let currentLineButtonIndex = 0;
+const lineButtonImages = [];
+const totalLineButtons = 2;
+for (let i = 1; i <= totalLineButtons; i++) {
+  let img = new Image();
+  img.src = `lineaPNG/line (${i}).png`;
+  lineButtonImages.push(img);
+}
+
+export function setPlayedSoundsArray(externalPlayedSounds) {
+  playedSounds = externalPlayedSounds;
+}
 
 export default function DemoFunction(
   monPiano,
@@ -10,10 +26,25 @@ export default function DemoFunction(
   textButtonImages,
   translateX
 ) {
+  let backgroundAudio;
+
+  function initializeBackgroundAudio(url) {
+    backgroundAudio = new Tone.Player({
+      url: url,
+      loop: true,
+      autostart: true,
+    }).toDestination();
+  }
+
+  function setBackgroundAudioVolume(volume) {
+    if (backgroundAudio) {
+      backgroundAudio.volume.value = volume;
+    }
+  }
 
   function placeRandomImage(note, type) {
     let img;
-    let imageIndex = parseInt(note.substring(1)) - 1; // Determine image index from note
+    let imageIndex = parseInt(note.substring(1)) - 1;
 
     if (type === "icon") {
       if (imageIndex < 0 || imageIndex >= iconImages.length) {
@@ -27,21 +58,19 @@ export default function DemoFunction(
         return;
       }
       img = textButtonImages[imageIndex];
-    } else if (type === "line") {  
-      
-
-      return;
+    } else if (type === "line") {
+      if (imageIndex < 0 || imageIndex >= lineButtonImages.length) {
+        console.error(`Invalid image index for line: ${imageIndex}`);
+        return;
+      }
+      img = lineButtonImages[imageIndex];
     } else {
       console.error(`Unknown type: ${type}`);
       return;
     }
 
-    if (!img) {
-      console.error(`Image not found for note ${note} and type ${type}`);
-      return;
-    }
 
-    const visibleWidth = canvas.width; // Adjust for translation
+    const visibleWidth = canvas.width;
     const x = Math.random() * visibleWidth - translateX;
     const y = Math.random() * (canvas.height - img.height);
 
@@ -67,7 +96,8 @@ export default function DemoFunction(
       } else if (sound.type === "line") {
         monPiano.lineSampler.triggerAttackRelease(sound.note, "1n");
       }
-      placeRandomImage(sound.note, sound.type); // Place the image on the canvas
+      placeRandomImage(sound.note, sound.type);
+      playedSounds.push(sound);
     }, sound.delay * 1000);
   });
 }

@@ -14,7 +14,7 @@ let backgroundAudio;
 function initializeBackgroundAudio(url) {
   backgroundAudio = new Tone.Player({
     url: url,
-    loop: true,
+    loop: false,
     autostart: true,
   }).toDestination();
 }
@@ -42,6 +42,9 @@ let draggedIcon = null;
 
 let isDraggingText = false;
 let draggedText = null;
+
+const demoButtonImage = new Image();
+demoButtonImage.src = "undoPNG/Demo.png";
 
 const undoButtonImage = new Image();
 undoButtonImage.src = "undoPNG/undo.png";
@@ -178,6 +181,9 @@ canvas.addEventListener("click", (event) => {
     console.log("playButton clicked");
     stopCanvasAnimation();
     PlayFunction(playedSounds, monPiano, allLines, placedIcons, placedTexts, ctx, canvas.width, translateX);
+/*     initializeBackgroundAudio("drums2.mp3");
+    setBackgroundAudioVolume(-10);   */
+    
   }
 
   if (
@@ -235,6 +241,10 @@ canvas.addEventListener("click", (event) => {
     y <= buttonPositions.DemoButton.y + buttonPositions.DemoButton.height
   ) {
     console.log("DemoButton clicked");
+    
+    initializeBackgroundAudio("drums2.mp3");
+    setBackgroundAudioVolume(-10);  
+    
     DemoFunction(monPiano, canvas, ctx, placedIcons, iconImages, textButtonImages, translateX);
   }
 });
@@ -472,17 +482,15 @@ function drawDemoButton() {
   const buttonWidth = buttonPositions.DemoButton.width * canvas.width;
   const buttonHeight = buttonPositions.DemoButton.height * canvas.height;
 
-  ctx.beginPath();
-  ctx.rect(
-    buttonPositions.DemoButton.x * canvas.width,
-    buttonPositions.DemoButton.y * canvas.height,
-    buttonWidth,
-    buttonHeight
-  );
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.closePath();
+  if (demoButtonImage.complete) {
+    ctx.drawImage(
+      demoButtonImage,
+      buttonPositions.DemoButton.x * canvas.width,
+      buttonPositions.DemoButton.y * canvas.height,
+      buttonWidth,
+      buttonHeight
+    );
+  }
 }
 
 function drawPlayButton() {
@@ -663,5 +671,5 @@ function draw() {
 
 draw();
 
-initializeBackgroundAudio("drums2.mp3");
-setBackgroundAudioVolume(-40);
+/* initializeBackgroundAudio("drums2.mp3");
+setBackgroundAudioVolume(-40); */

@@ -4,7 +4,7 @@ class BackgroundAudio {
   constructor(url) {
     this.player = new Tone.Player({
       url: url,
-      loop: true,
+      loop: false, 
       autostart: true,
     }).toDestination();
   }

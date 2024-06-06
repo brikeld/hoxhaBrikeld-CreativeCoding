@@ -2,8 +2,8 @@ uptaded 4:
 long composition and changed composition
 
 [COMPOSITION 1]
-line: 0, 02.482
-i_3: 06.204
+line: 00, 02.482
+t_3: 06.204
 i_4: 03.722
 i_6: 01.241, 04.963
 i_7: 07.445
