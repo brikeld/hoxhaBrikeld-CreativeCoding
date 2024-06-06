@@ -35,10 +35,20 @@ const Composition4 = [
   { note: "C2", delay: 0.465, type: "icon" },
   { note: "C2", delay: 5.584, type: "icon" },
   { note: "C3", delay: 1.241, type: "text" },
+  { note: "C3", delay: 7.745, type: "text" },
   { note: "C5", delay: 3.722, type: "text" },
   { note: "C6", delay: 0, type: "text" },
   { note: "C6", delay: 2.482, type: "text" },
   { note: "C6", delay: 4.963, type: "text" },
+];
+
+const Composition5 = [
+
+
+
+
+
+  
 ];
 
 
