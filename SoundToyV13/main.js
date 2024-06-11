@@ -102,15 +102,15 @@ for (let i = 1; i <= totalLineButtons; i++) {
 }
 
 const buttonPositions = {
-  right: { x: 0.8, y: 0.91, width: 0.03, height: 0.03 },
-  stop: { x: 0.44, y: 0.91, width: 0.03, height: 0.03 },
-  left: { x: 0.05, y: 0.91, width: 0.03, height: 0.03 },
-  LineButton: { x: 0.868, y: 0.05, width: 0.096, height: 0.123 },  
-  textButton: { x: 0.868, y: 0.322, width: 0.096, height: 0.123 },
-  iconButton: { x: 0.868, y: 0.187, width: 0.096, height: 0.123 },
-  UndoButton: { x: 0.868, y: 0.459, width: 0.096, height: 0.123 },
-  DemoButton: { x: 0.868, y: 0.6, width: 0.096, height: 0.123 }, 
-  PlayButton: { x: 0.873, y: 0.8, width: 0.09, height: 0.11 },
+  right: { x: 0.53, y: 0.865, width: 0.03, height: 0.03 },
+  stop: { x: 0.41, y: 0.865, width: 0.03, height: 0.03 },
+  left: { x: 0.28, y: 0.865, width: 0.03, height: 0.03 },
+  LineButton: { x: 0.829, y: 0.05, width: 0.12, height: 0.132 },  
+  textButton: { x: 0.829, y: 0.40, width: 0.12, height: 0.123 },
+  iconButton: { x: 0.8322, y: 0.23, width: 0.11, height: 0.123 },
+  UndoButton: { x: 0.827, y: 0.734, width: 0.12, height: 0.04 },
+  DemoButton: { x: 0.820, y: 0.57, width: 0.136, height: 0.135 }, 
+  PlayButton: { x: 0.820, y: 0.81, width: 0.134, height: 0.14 },
 };
 
 function setCanvasResolution(canvas, ctx, scaleFactor) {
@@ -127,9 +127,9 @@ function setCanvasResolution(canvas, ctx, scaleFactor) {
 }
 
 const drawingArea = {
-  x: canvas.width / 27,
+  x: canvas.width / 30,
   y: canvas.height / 20,
-  width: canvas.width / 1.245,
+  width: canvas.width / 1.325,
   height: canvas.height / 1.259,
 };
 
@@ -387,7 +387,7 @@ function handleMouseMove(event) {
           monPiano,
           lineFillImage
         );
-        // Only play the sound for the first segment
+        // Only play the sound for the first segment !!!
         if (!playedNote && monPiano.lineSamplerLoaded) {
           monPiano.playLineSound(false);
           playedSounds.push({ note: 'C1', element: line, type: 'line' });
@@ -517,6 +517,8 @@ function drawLineButton() {
       lineRect.height
     );
   }
+  
+
 }
 
 function drawIconButton() {
@@ -569,19 +571,10 @@ function drawUndoButton() {
   const buttonWidth = buttonPositions.UndoButton.width * canvas.width;
   const buttonHeight = buttonPositions.UndoButton.height * canvas.height;
 
-  if (undoButtonImage.complete) {
-    ctx.drawImage(
-      undoButtonImage,
-      buttonPositions.UndoButton.x * canvas.width,
-      buttonPositions.UndoButton.y * canvas.height,
-      buttonWidth,
-      buttonHeight
-    );
-  }
 }
 
 function drawDrawingArea() {
-  // Draw drawing area here
+
 }
 
 function draw() {

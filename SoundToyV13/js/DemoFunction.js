@@ -42,10 +42,17 @@ export default function DemoFunction(
     }
   }
 
+  const drawingArea = {
+    x: canvas.width / 30,
+    y: canvas.height / 20,
+    width: canvas.width / 1.325,
+    height: canvas.height / 1.259,
+  };
+
   function placeRandomImage(note, type) {
     let img;
     let imageIndex = parseInt(note.substring(1)) - 1;
-
+  
     if (type === "icon") {
       if (imageIndex < 0 || imageIndex >= iconImages.length) {
         console.error(`Invalid image index for icon: ${imageIndex}`);
@@ -68,18 +75,19 @@ export default function DemoFunction(
       console.error(`Unknown type: ${type}`);
       return;
     }
-
-
-    const visibleWidth = canvas.width;
-    const x = Math.random() * visibleWidth - translateX;
-    const y = Math.random() * (canvas.height - img.height);
-
+  
+    const maxWidth = drawingArea.width - img.width;
+    const maxHeight = drawingArea.height - img.height;
+  
+    const x = drawingArea.x + Math.random() * maxWidth - translateX;
+    const y = drawingArea.y + Math.random() * maxHeight;
+  
     placedIcons.push({
       img: img,
       x: x,
       y: y,
     });
-
+  
     ctx.drawImage(img, x, y, img.width, img.height);
     console.log(`Image placed: ${img.src} at (${x}, ${y})`);
   }
@@ -97,7 +105,7 @@ export default function DemoFunction(
         monPiano.lineSampler.triggerAttackRelease(sound.note, "1n");
       }
       placeRandomImage(sound.note, sound.type);
-      playedSounds.push(sound);
+      playedSounds.push(sound); // Add the sound to the playedSounds array
     }, sound.delay * 1000);
   });
 }

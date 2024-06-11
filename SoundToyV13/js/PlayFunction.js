@@ -1,5 +1,11 @@
 let timers = [];
 
+import * as Tone from "tone";
+
+// 
+let drumsPlayer = new Tone.Player("/drums2.mp3").toDestination();
+drumsPlayer.volume.value = -4; 
+
 export default function PlayFunction(playedSounds, monPiano, allLines, placedIcons, placedTexts, ctx, canvasWidth, translateX, DemoFunction) {
   console.log('All played sounds:', playedSounds);
 
@@ -7,7 +13,7 @@ export default function PlayFunction(playedSounds, monPiano, allLines, placedIco
   timers = [];
 
   let delay = 0;
-  const noteDuration = 1000;
+  const noteDuration = 800;
 
   function highlightElement(element) {
     ctx.save();
@@ -23,9 +29,13 @@ export default function PlayFunction(playedSounds, monPiano, allLines, placedIco
   }
 
   let lastPlayedLineId = null;
+  let drumsPlayedCount = 0;
+
+  drumsPlayer.start();
+  console.log(`Drums played count: ${drumsPlayedCount}`);
 
   playedSounds.forEach((sound, index) => {
-    if (sound.type === 'line' && sound.element.id === lastPlayedLineId) {
+    if (sound.type === 'line' && sound.element && sound.element.id === lastPlayedLineId) {
       return; // Skip this sound if it belongs to the same line as the previous one
     }
 
